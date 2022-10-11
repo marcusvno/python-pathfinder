@@ -3,24 +3,28 @@ from pathlib import Path
 
 def create_image(file):
     from PIL import Image
-    import numpy
+    import numpy as np
 
-    print(file)
-    matrix = numpy.loadtxt(file)
+    print(f'Converting {file}...')
+    matrix = np.loadtxt(file)
     cols = len(matrix)
     rows = len(matrix[0])
 
-    max_elevation = numpy.amax(matrix)
-    min_elevation = numpy.amin(matrix)
+    max_elevation = np.amax(matrix)
+    min_elevation = np.amin(matrix)
+
+    # print(matrix[0][0])
 
     im = Image.new('RGBA', (rows, cols))
 
     for x in range(cols):
         for y in range(rows):
             current_color = color_calc(min_elevation, max_elevation, matrix[x][y])  # noqa
-            im.putpixel((x, y), (current_color, current_color, current_color))
+            im.putpixel((y, x), (current_color, current_color, current_color))
 
+    print(f'Saving {Path(file).stem} map.png..')
     im.save(f'{Path(file).stem} map.png')
+    print('Saved!')
 
     """TEST LOOPS
     for x in range(5):
