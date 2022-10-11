@@ -13,11 +13,6 @@ def create_image(file):
     max_elevation = numpy.amax(matrix)
     min_elevation = numpy.amin(matrix)
 
-    """ TEST LOOPS
-    for x in range(cols):
-        for y in range(rows):
-            print(matrix[x][y]) """
-
     im = Image.new('RGBA', (rows, cols))
 
     for x in range(cols):
@@ -27,7 +22,13 @@ def create_image(file):
 
     im.save(f'{Path(file).stem} map.png')
 
+    """TEST LOOPS
+    for x in range(5):
+        for y in range(5):
+            print(matrix[x][y])
+    
     print(f'Highest Elevation: {max_elevation} Lowest: {min_elevation}') # noqa
+    """
 
 
 def color_calc(min_ele, max_ele, current_ele):
