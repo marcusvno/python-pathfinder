@@ -19,12 +19,6 @@ def check_elevations(current_loc):
     elevation_comparison.append(np.abs(OPTION_B[2] - current_loc[2]))
     elevation_comparison.append(np.abs(OPTION_C[2] - current_loc[2]))
 
-    print(OPTION_A)
-    print(OPTION_B)
-    print(OPTION_C)
-    print(elevation_comparison)
-    print(np.amin(elevation_comparison))
-
     small_ele_change = np.amin(elevation_comparison)
     change_index = elevation_comparison.index(small_ele_change)
     if change_index == 0:
@@ -36,20 +30,31 @@ def check_elevations(current_loc):
 
 
 def map_path(file):
-    map_unmarked = Image.open(f'{Path(file).stem} map.png')
+    from PIL import ImageColor
+
+    map_unmarked = Image.open(f'MAP {Path(file).stem}.png')
     map_Copy = map_unmarked.copy()
 
     rows, cols = matrix.shape
     STARTING_LOC = (np.floor(rows/2), 0)
-    current_loc = [STARTING_LOC[0], STARTING_LOC[1], matrix[int(STARTING_LOC[0])][0]] # noqa
+    x = int(STARTING_LOC[0])
+    y = int(STARTING_LOC[1])
+    current_loc = [x, y, matrix[x][y]] # noqa
     print(f'Starting loc: {current_loc}')
 
-    current_loc = check_elevations(current_loc)
-    print(f'New loc: {current_loc}')
+    for i in range(cols-1):
+        map_Copy.putpixel((y, x), (ImageColor.getcolor('cyan', 'RGBA')))
+        current_loc = check_elevations(current_loc)
+        x = int(current_loc[0])
+        y = int(current_loc[1])
+    print()
+    print('Calculating path...')
+    print(f'Saving path for {Path(file).stem}...')
+    map_Copy.save(f'{Path(file).stem} pathed.png')
+    print('...Saved!')
 
 
 def create_image(file):
-    print(f'Converting {file}...')
     rows, cols = matrix.shape
 
     max_elevation = np.amax(matrix)
@@ -62,8 +67,9 @@ def create_image(file):
             current_color = color_calc(min_elevation, max_elevation, matrix[x][y])  # noqa
             im.putpixel((y, x), (current_color, current_color, current_color))
 
-    print(f'Saving {Path(file).stem} map.png..')
-    im.save(f'{Path(file).stem} map.png')
+    print(f'Converting {file}...')
+    print(f'Saving MAP {Path(file).stem}.png...')
+    im.save(f'MAP {Path(file).stem}.png')
     print('...Saved!')
 
 
@@ -77,7 +83,7 @@ if __name__ == "__main__":
     file = Path(args.file)
     if file.is_file():
         matrix = np.loadtxt(file)
-        # create_image(file)
+        create_image(file)
         map_path(file)
     else:
         print(f"{file} does not exist!")
