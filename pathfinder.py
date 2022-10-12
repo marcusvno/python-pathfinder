@@ -32,7 +32,7 @@ def check_elevations(current_loc):
 def map_path(file):
     from PIL import ImageColor
 
-    map_unmarked = Image.open(f'MAP {Path(file).stem}.png')
+    map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
     map_Copy = map_unmarked.copy()
 
     rows, cols = matrix.shape
@@ -40,17 +40,16 @@ def map_path(file):
     x = int(STARTING_LOC[0])
     y = int(STARTING_LOC[1])
     current_loc = [x, y, matrix[x][y]] # noqa
-    print(f'Starting loc: {current_loc}')
 
     for i in range(cols-1):
-        map_Copy.putpixel((y, x), (ImageColor.getcolor('cyan', 'RGBA')))
+        map_Copy.putpixel((y, x), (ImageColor.getcolor('purple', 'RGBA')))
         current_loc = check_elevations(current_loc)
         x = int(current_loc[0])
         y = int(current_loc[1])
     print()
     print('Calculating path...')
-    print(f'Saving path for {Path(file).stem}...')
-    map_Copy.save(f'{Path(file).stem} pathed.png')
+    print(f'Saving path for {file}...')
+    map_Copy.save(f'PATH - {Path(file).stem}.png')
     print('...Saved!')
 
 
@@ -67,9 +66,9 @@ def create_image(file):
             current_color = color_calc(min_elevation, max_elevation, matrix[x][y])  # noqa
             im.putpixel((y, x), (current_color, current_color, current_color))
 
-    print(f'Converting {file}...')
-    print(f'Saving MAP {Path(file).stem}.png...')
-    im.save(f'MAP {Path(file).stem}.png')
+    print(f'\nConverting {file}...')
+    print(f'Saving MAP - {Path(file).stem}.png...')
+    im.save(f'MAP - {Path(file).stem}.png')
     print('...Saved!')
 
 
