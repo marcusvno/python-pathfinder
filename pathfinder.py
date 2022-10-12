@@ -9,28 +9,29 @@ def color_calc(min_ele, max_ele, current_ele):
     return color_code
 
 
-def track_best_path():
-    pass
-
-
 def check_elevations(current_loc):
+    global path_total
+
     i = int(current_loc[0])
     j = int(current_loc[1])
     elevation = current_loc[2]
     elevation_comparison = []
 
-    if (i < 600) and (j < 599):
+    if (i < ROWS) and (j < COLS-1):
         OPTION_A = [i-1, j+1, matrix[i-1][j+1]] # noqa
         elevation_comparison.append(np.abs(OPTION_A[2] - elevation))
-    if (i < 600) and (j < 599):
+    if (i < ROWS) and (j < COLS-1):
         OPTION_B = [i, j+1, matrix[i][j+1]] # noqa
         elevation_comparison.append(np.abs(OPTION_B[2] - elevation))
-    if (i < 599) and (j < 599):
+    if (i < ROWS-1) and (j < COLS-1):
         OPTION_C = [i+1, j+1, matrix[i+1][j+1]] # noqa
         elevation_comparison.append(np.abs(OPTION_C[2] - elevation))
 
-    small_ele_change = np.amin(elevation_comparison)
-    change_index = elevation_comparison.index(small_ele_change)
+    smallest_ele_change = np.amin(elevation_comparison)
+    change_index = elevation_comparison.index(smallest_ele_change)
+
+    path_total += smallest_ele_change
+
     if change_index == 0:
         return OPTION_A
     elif change_index == 1:
@@ -39,7 +40,7 @@ def check_elevations(current_loc):
         return OPTION_C
 
 
-def map_path(start_loc):
+def map_path(start_loc, flag):
     from PIL import ImageColor
 
     x = int(start_loc[0])
@@ -48,13 +49,16 @@ def map_path(start_loc):
     current_loc = [x, y, matrix[x][y]] # noqa
 
     for i in range(COLS-1):
-        map_Copy.putpixel((y, x), (ImageColor.getcolor('purple', 'RGBA')))
+        if flag:
+            map_Copy.putpixel((y, x), (ImageColor.getcolor('goldenrod', 'RGBA'))) # noqa
+        else:
+            map_Copy.putpixel((y, x), (ImageColor.getcolor('purple', 'RGBA'))) # noqa
         current_loc = check_elevations(current_loc)
         x = int(current_loc[0])
         y = int(current_loc[1])
 
 
-def create_image(file):
+def create_map(file):
     max_elevation = np.amax(matrix)
     min_elevation = np.amin(matrix)
 
@@ -71,6 +75,14 @@ def create_image(file):
     print('...Saved!')
 
 
+def highlight_best_path():
+    best_ele = int(np.amin(best_path))
+    best_start_pt = (best_path.index(best_ele), 0)
+    map_path(best_start_pt, True)
+
+    pass
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(
@@ -83,20 +95,27 @@ if __name__ == "__main__":
         matrix = np.loadtxt(file)
         ROWS, COLS = matrix.shape
 
-        create_image(file)
+        create_map(file)
 
         map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
         map_Copy = map_unmarked.copy()
 
         print(f'\nPathfinding through {file}...')
 
-        x = 0
-        for x in range(ROWS):
-            location = (x, 0)
-            map_path(location)
+        k = 0
+        best_path = []
+        best_flag = False
 
-        map_Copy.save(f'PATH - {Path(file).stem}.png')
+        for k in range(ROWS):
+            path_total = 0
+            location = (k, 0)
+            map_path(location, best_flag)
+            best_path.append(path_total)
+
+        highlight_best_path()
+
         print(f'Saving PATH - {Path(file).stem}.png...')
+        map_Copy.save(f'PATH - {Path(file).stem}.png')
         print('...Saved!')
 
     else:
