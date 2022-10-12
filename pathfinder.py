@@ -29,40 +29,43 @@ def check_elevations(current_loc):
         return OPTION_C
 
 
-def map_path(file):
+def map_path(file, start_loc):
     from PIL import ImageColor
 
-    map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
-    map_Copy = map_unmarked.copy()
+    # map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
+    # map_Copy = map_unmarked.copy()
 
-    rows, cols = matrix.shape
-    STARTING_LOC = (np.floor(rows/2), 0)
-    x = int(STARTING_LOC[0])
-    y = int(STARTING_LOC[1])
+    # STARTING_LOC = (np.floor(rows/2), 0)
+    # x = int(STARTING_LOC[0])
+    # y = int(STARTING_LOC[1])
+
+    x = int(start_loc[0])
+    y = int(start_loc[1])
+
     current_loc = [x, y, matrix[x][y]] # noqa
 
-    for i in range(cols-1):
+    for i in range(COLS-1):
         map_Copy.putpixel((y, x), (ImageColor.getcolor('purple', 'RGBA')))
         current_loc = check_elevations(current_loc)
         x = int(current_loc[0])
         y = int(current_loc[1])
-    print()
+
+    # map_Copy.save(f'PATH - {Path(file).stem}.png')
+
+    """ print()
     print('Calculating path...')
     print(f'Saving path for {file}...')
-    map_Copy.save(f'PATH - {Path(file).stem}.png')
-    print('...Saved!')
+    print('...Saved!') """
 
 
 def create_image(file):
-    rows, cols = matrix.shape
-
     max_elevation = np.amax(matrix)
     min_elevation = np.amin(matrix)
 
-    im = Image.new('RGBA', (rows, cols))
+    im = Image.new('RGBA', (ROWS, COLS))
 
-    for x in range(rows):
-        for y in range(cols):
+    for x in range(ROWS):
+        for y in range(COLS):
             current_color = color_calc(min_elevation, max_elevation, matrix[x][y])  # noqa
             im.putpixel((y, x), (current_color, current_color, current_color))
 
@@ -82,8 +85,19 @@ if __name__ == "__main__":
     file = Path(args.file)
     if file.is_file():
         matrix = np.loadtxt(file)
+        ROWS, COLS = matrix.shape
+
         create_image(file)
-        map_path(file)
+
+        map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
+        map_Copy = map_unmarked.copy()
+
+        x = 0
+        for x in range(ROWS-2):
+            location = (x, 0)
+            map_path(file, location)
+
+        map_Copy.save(f'PATH - {Path(file).stem}.png')
     else:
         print(f"{file} does not exist!")
         exit(1)
