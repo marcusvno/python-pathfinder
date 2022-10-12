@@ -80,8 +80,6 @@ def highlight_best_path():
     best_start_pt = (best_path.index(best_ele), 0)
     map_path(best_start_pt, True)
 
-    pass
-
 
 if __name__ == "__main__":
     import argparse
