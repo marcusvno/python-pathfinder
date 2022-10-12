@@ -9,15 +9,25 @@ def color_calc(min_ele, max_ele, current_ele):
     return color_code
 
 
-def check_elevations(current_loc):
-    OPTION_A = [current_loc[0]-1, current_loc[1]+1, matrix[int(current_loc[0])-1][int(current_loc[1]+1)]] # noqa
-    OPTION_B = [current_loc[0], current_loc[1]+1, matrix[int(current_loc[0])][int(current_loc[1])+1]] # noqa
-    OPTION_C = [current_loc[0]+1, current_loc[1]+1, matrix[int(current_loc[0])+1][int(current_loc[1]+1)]] # noqa
+def track_best_path():
+    pass
 
+
+def check_elevations(current_loc):
+    i = int(current_loc[0])
+    j = int(current_loc[1])
+    elevation = current_loc[2]
     elevation_comparison = []
-    elevation_comparison.append(np.abs(OPTION_A[2] - current_loc[2]))
-    elevation_comparison.append(np.abs(OPTION_B[2] - current_loc[2]))
-    elevation_comparison.append(np.abs(OPTION_C[2] - current_loc[2]))
+
+    if (i < 600) and (j < 599):
+        OPTION_A = [i-1, j+1, matrix[i-1][j+1]] # noqa
+        elevation_comparison.append(np.abs(OPTION_A[2] - elevation))
+    if (i < 600) and (j < 599):
+        OPTION_B = [i, j+1, matrix[i][j+1]] # noqa
+        elevation_comparison.append(np.abs(OPTION_B[2] - elevation))
+    if (i < 599) and (j < 599):
+        OPTION_C = [i+1, j+1, matrix[i+1][j+1]] # noqa
+        elevation_comparison.append(np.abs(OPTION_C[2] - elevation))
 
     small_ele_change = np.amin(elevation_comparison)
     change_index = elevation_comparison.index(small_ele_change)
@@ -29,15 +39,8 @@ def check_elevations(current_loc):
         return OPTION_C
 
 
-def map_path(file, start_loc):
+def map_path(start_loc):
     from PIL import ImageColor
-
-    # map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
-    # map_Copy = map_unmarked.copy()
-
-    # STARTING_LOC = (np.floor(rows/2), 0)
-    # x = int(STARTING_LOC[0])
-    # y = int(STARTING_LOC[1])
 
     x = int(start_loc[0])
     y = int(start_loc[1])
@@ -49,13 +52,6 @@ def map_path(file, start_loc):
         current_loc = check_elevations(current_loc)
         x = int(current_loc[0])
         y = int(current_loc[1])
-
-    # map_Copy.save(f'PATH - {Path(file).stem}.png')
-
-    """ print()
-    print('Calculating path...')
-    print(f'Saving path for {file}...')
-    print('...Saved!') """
 
 
 def create_image(file):
@@ -92,12 +88,17 @@ if __name__ == "__main__":
         map_unmarked = Image.open(f'MAP - {Path(file).stem}.png')
         map_Copy = map_unmarked.copy()
 
+        print(f'\nPathfinding through {file}...')
+
         x = 0
-        for x in range(ROWS-2):
+        for x in range(ROWS):
             location = (x, 0)
-            map_path(file, location)
+            map_path(location)
 
         map_Copy.save(f'PATH - {Path(file).stem}.png')
+        print(f'Saving PATH - {Path(file).stem}.png...')
+        print('...Saved!')
+
     else:
         print(f"{file} does not exist!")
         exit(1)
