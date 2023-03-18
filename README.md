@@ -13,12 +13,15 @@ Using object-oriented programming and testing, build a program to read elevation
 
 ## Maps Created:
 
+### Map derived from smaller sample dataset
+![Small Dataset Map](map_elevation_small.png)
+![Small Dataset Paths](mapped_paths_elevation_small.png)
+
+### Map derived from large sample dataset
 ![Large Dataset Map](map_elevation_large.png)
 ![Large Dataset Map Pathed](mapped_paths_elevation_large.png)
 
-
-![Small Dataset Map](map_elevation_small.png)
-![Small Dataset Paths](mapped_paths_elevation_small.png)
+#### For comparison, you can see the assignment's solution images [here](original-brief.md)
 
 ## Instructions
 
