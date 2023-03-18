@@ -13,9 +13,9 @@ Using object-oriented programming and testing, build a program to read elevation
 
 ## Maps Created:
 
-![Large Dataset Map](./"PATH - elevation_large.png")
+[Large Dataset Map](./"PATH - elevation_large.png")
 
-![Small Dataset Map](./"PATH - elevation_small.png")
+[Small Dataset Map](./"PATH - elevation_small.png")
 
 
 ## Instructions
