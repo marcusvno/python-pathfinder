@@ -21,7 +21,7 @@ Using object-oriented programming and testing, build a program to read elevation
 ![Large Dataset Map](map_elevation_large.png)
 ![Large Dataset Map Pathed](mapped_paths_elevation_large.png)
 
-#### For comparison, you can see the assignment's solution images [here](original-brief.md)
+#### For comparison, you can see the assignment's solution images [here.](original-brief.md)
 
 ## Instructions
 
